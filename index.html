@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora</title>
     <style>
-
         body {
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh;
             margin: 0;
             background-color: #f4f4f9;
+            padding: 20px;
         }
 
         .calculator, .results {
-            width: 800px;
+            width: 100%;
+            max-width: 600px;
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 10px;
@@ -31,10 +31,11 @@
             margin-top: 10px;
         }
 
-        input{
-            width: 97.3%;
+        input {
+            width: 100%;
             padding: 8px;
             margin-top: 5px;
+            box-sizing: border-box;
         }
 
         button {
@@ -56,12 +57,9 @@
             margin-top: 20px;
         }
 
-        #result div {
-            margin-bottom: 10px;
-        }
-
         #monthlyBreakdown {
             margin-top: 20px;
+            overflow-x: auto;
         }
 
         #breakdownTable {
@@ -77,8 +75,23 @@
 
         #investmentChart {
             margin-top: 20px;
+            width: 100%;
         }
 
+        @media (max-width: 600px) {
+            .calculator, .results {
+                width: 100%;
+                padding: 15px;
+            }
+
+            button {
+                padding: 8px;
+            }
+
+            input, select {
+                padding: 6px;
+            }
+        }
 
     </style>
 </head>
@@ -109,9 +122,9 @@
             <option value="years">Anos</option>
         </select>
 
-        <button onclick="calculate()">Calcular</button>
+        <button onClick="calculate()">Calcular</button>
     </div>
-    <div class="results">
+    <div class="results" id="resultsDiv" style="display: none;">
         <div id="finalValue"></div>
         <div id="totalInvested"></div>
         <div id="totalInterest"></div>
@@ -134,21 +147,47 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        function calculate() {
-            const initialAmount = parseFloat(document.getElementById('initialAmount').value);
-            const monthlyAmount = parseFloat(document.getElementById('monthlyAmount').value);
+        function simulateRates() {
+            return {
+                inflationRate: 0.03,  // Simulação de 3% ao ano
+                cdbRate: 10.4,  // Simulação de 6% ao ano
+                dollarRate: 0.05  // Simulação de 5% ao ano
+            };
+        }
+
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function parseCurrency(value) {
+            return parseFloat(value.replace(/\D/g, '')) / 100;
+        }
+
+        function applyCurrencyMask(element) {
+            let value = element.value.replace(/\D/g, '');
+            if (value.length === 0) {
+                element.value = '';
+                return;
+            }
+            value = parseFloat(value);
+            element.value = formatCurrency(value);
+        }
+
+        async function calculate() {
+            const initialAmount = parseCurrency(document.getElementById('initialAmount').value);
+            const monthlyAmount = parseCurrency(document.getElementById('monthlyAmount').value);
             const interestRate = parseFloat(document.getElementById('interestRate').value);
             const rateType = document.getElementById('rateType').value;
             const investmentTime = parseFloat(document.getElementById('investmentTime').value);
             const timeUnit = document.getElementById('timeUnit').value;
 
-            const inflationRate = 0.03; // Exemplo: 3% ao ano
-            const cdbRate = 0.12; // Exemplo: 12% ao ano, 100% do CDI
+            const { inflationRate, cdbRate, dollarRate } = simulateRates();
 
             let months = timeUnit === 'years' ? investmentTime * 12 : investmentTime;
             let monthlyRate = rateType === 'annual' ? (interestRate / 100) / 12 : interestRate / 100;
             let monthlyInflationRate = inflationRate / 12;
             let monthlyCdbRate = cdbRate / 12;
+            let monthlyDollarRate = dollarRate / 12;
 
             let totalInvested = initialAmount;
             let totalInterest = 0;
@@ -159,8 +198,10 @@
             let rendimentoData = [];
             let cdbData = [];
             let inflationData = [];
+            let dollarData = [];
             let cdbTotal = initialAmount;
             let inflationTotal = initialAmount;
+            let dollarTotal = initialAmount;
 
             for (let i = 0; i < months; i++) {
                 totalAmount += monthlyAmount;
@@ -171,12 +212,13 @@
 
                 cdbTotal += monthlyAmount + (cdbTotal * monthlyCdbRate);
                 inflationTotal += monthlyAmount + (inflationTotal * monthlyInflationRate);
+                dollarTotal += monthlyAmount + (dollarTotal * monthlyDollarRate);
 
                 breakdownHTML += `<tr>
                     <td>${i + 1}</td>
-                    <td>R$ ${monthlyAmount.toFixed(2)}</td>
-                    <td>R$ ${interest.toFixed(2)}</td>
-                    <td>R$ ${totalAmount.toFixed(2)}</td>
+                    <td>${formatCurrency(monthlyAmount)}</td>
+                    <td>${formatCurrency(interest)}</td>
+                    <td>${formatCurrency(totalAmount)}</td>
                 </tr>`;
 
                 monthlyData.push(i + 1);
@@ -184,12 +226,15 @@
                 rendimentoData.push(interest);
                 cdbData.push(cdbTotal.toFixed(2));
                 inflationData.push(inflationTotal.toFixed(2));
+                dollarData.push(dollarTotal.toFixed(2));
             }
 
-            document.getElementById('finalValue').innerText = `Valor Total Final: R$ ${totalAmount.toFixed(2)}`;
-            document.getElementById('totalInvested').innerText = `Total Investido: R$ ${totalInvested.toFixed(2)}`;
-            document.getElementById('totalInterest').innerText = `Total de Juros: R$ ${totalInterest.toFixed(2)}`;
+            document.getElementById('finalValue').innerText = `Valor Total Final: ${formatCurrency(totalAmount)}`;
+            document.getElementById('totalInvested').innerText = `Total Investido: ${formatCurrency(totalInvested)}`;
+            document.getElementById('totalInterest').innerText = `Total de Juros: ${formatCurrency(totalInterest)}`;
             document.querySelector('#breakdownTable tbody').innerHTML = breakdownHTML;
+
+            document.getElementById('resultsDiv').style.display = 'block';
 
             const ctx = document.getElementById('investmentChart').getContext('2d');
             new Chart(ctx, {
@@ -197,13 +242,13 @@
                 data: {
                     labels: monthlyData,
                     datasets: [
-                        /*{
+                        {
                             label: 'Aporte',
                             data: aporteData,
                             borderColor: 'rgba(75, 192, 192, 1)',
                             borderWidth: 1,
                             fill: false
-                        },*/
+                        },
                         {
                             label: 'Rendimento',
                             data: rendimentoData,
@@ -222,6 +267,13 @@
                             label: 'Inflação',
                             data: inflationData,
                             borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1,
+                            fill: false
+                        },
+                        {
+                            label: 'Dólar',
+                            data: dollarData,
+                            borderColor: 'rgba(54, 162, 235, 1)',
                             borderWidth: 1,
                             fill: false
                         }
@@ -247,8 +299,9 @@
             });
         }
 
-
-
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
     </script>
 </body>
 </html>
