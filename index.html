@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+
+        .calculator, .results {
+            width: 800px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input{
+            width: 97.3%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .results {
+            margin-top: 20px;
+        }
+
+        #result div {
+            margin-bottom: 10px;
+        }
+
+        #monthlyBreakdown {
+            margin-top: 20px;
+        }
+
+        #breakdownTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #breakdownTable th, #breakdownTable td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        #investmentChart {
+            margin-top: 20px;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Calculadora de Juros Compostos</h1>
+        <label for="initialAmount">Aporte Inicial (R$):</label>
+        <input type="number" id="initialAmount">
+
+        <label for="monthlyAmount">Aporte Mensal (R$):</label>
+        <input type="number" id="monthlyAmount">
+
+        <label for="interestRate">Taxa de Juros (%):</label>
+        <input type="number" id="interestRate">
+
+        <label for="rateType">Tipo de Taxa de Juros:</label>
+        <select id="rateType">
+            <option value="monthly">Mensal</option>
+            <option value="annual">Anual</option>
+        </select>
+
+        <label for="investmentTime">Tempo de Investimento:</label>
+        <input type="number" id="investmentTime">
+
+        <label for="timeUnit">Unidade de Tempo:</label>
+        <select id="timeUnit">
+            <option value="months">Meses</option>
+            <option value="years">Anos</option>
+        </select>
+
+        <button onclick="calculate()">Calcular</button>
+    </div>
+    <div class="results">
+        <div id="finalValue"></div>
+        <div id="totalInvested"></div>
+        <div id="totalInterest"></div>
+        <div id="monthlyBreakdown">
+            <table id="breakdownTable">
+                <thead>
+                    <tr>
+                        <th>Mês</th>
+                        <th>Aporte</th>
+                        <th>Rendimento</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <canvas id="investmentChart"></canvas>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        function calculate() {
+            const initialAmount = parseFloat(document.getElementById('initialAmount').value);
+            const monthlyAmount = parseFloat(document.getElementById('monthlyAmount').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            const rateType = document.getElementById('rateType').value;
+            const investmentTime = parseFloat(document.getElementById('investmentTime').value);
+            const timeUnit = document.getElementById('timeUnit').value;
+
+            const inflationRate = 0.03; // Exemplo: 3% ao ano
+            const cdbRate = 0.12; // Exemplo: 12% ao ano, 100% do CDI
+
+            let months = timeUnit === 'years' ? investmentTime * 12 : investmentTime;
+            let monthlyRate = rateType === 'annual' ? (interestRate / 100) / 12 : interestRate / 100;
+            let monthlyInflationRate = inflationRate / 12;
+            let monthlyCdbRate = cdbRate / 12;
+
+            let totalInvested = initialAmount;
+            let totalInterest = 0;
+            let totalAmount = initialAmount;
+            let breakdownHTML = '';
+            let monthlyData = [];
+            let aporteData = [];
+            let rendimentoData = [];
+            let cdbData = [];
+            let inflationData = [];
+            let cdbTotal = initialAmount;
+            let inflationTotal = initialAmount;
+
+            for (let i = 0; i < months; i++) {
+                totalAmount += monthlyAmount;
+                totalInvested += monthlyAmount;
+                let interest = totalAmount * monthlyRate;
+                totalInterest += interest;
+                totalAmount += interest;
+
+                cdbTotal += monthlyAmount + (cdbTotal * monthlyCdbRate);
+                inflationTotal += monthlyAmount + (inflationTotal * monthlyInflationRate);
+
+                breakdownHTML += `<tr>
+                    <td>${i + 1}</td>
+                    <td>R$ ${monthlyAmount.toFixed(2)}</td>
+                    <td>R$ ${interest.toFixed(2)}</td>
+                    <td>R$ ${totalAmount.toFixed(2)}</td>
+                </tr>`;
+
+                monthlyData.push(i + 1);
+                aporteData.push(monthlyAmount);
+                rendimentoData.push(interest);
+                cdbData.push(cdbTotal.toFixed(2));
+                inflationData.push(inflationTotal.toFixed(2));
+            }
+
+            document.getElementById('finalValue').innerText = `Valor Total Final: R$ ${totalAmount.toFixed(2)}`;
+            document.getElementById('totalInvested').innerText = `Total Investido: R$ ${totalInvested.toFixed(2)}`;
+            document.getElementById('totalInterest').innerText = `Total de Juros: R$ ${totalInterest.toFixed(2)}`;
+            document.querySelector('#breakdownTable tbody').innerHTML = breakdownHTML;
+
+            const ctx = document.getElementById('investmentChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: monthlyData,
+                    datasets: [
+                        /*{
+                            label: 'Aporte',
+                            data: aporteData,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1,
+                            fill: false
+                        },*/
+                        {
+                            label: 'Rendimento',
+                            data: rendimentoData,
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 1,
+                            fill: false
+                        },
+                        {
+                            label: 'CDB (100% CDI)',
+                            data: cdbData,
+                            borderColor: 'rgba(255, 159, 64, 1)',
+                            borderWidth: 1,
+                            fill: false
+                        },
+                        {
+                            label: 'Inflação',
+                            data: inflationData,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Mês'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Valor (R$)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+
+
+    </script>
+</body>
+</html>
