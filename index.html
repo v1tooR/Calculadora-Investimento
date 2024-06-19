@@ -5,91 +5,185 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: Montserrat;
             display: flex;
             flex-direction: column;
             align-items: center;
             margin: 0;
-            background-color: #f4f4f9;
+            color: #FFFFFF;
             padding: 20px;
         }
 
-        .calculator, .results {
+        .calculator {
             width: 100%;
             max-width: 600px;
             padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
-            margin-top: 20px;
+            border-radius: 20px;
+            background-color: #282828;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            color: #FFFFFF;
+            margin-top: 10px;
+        }
+
+        .calculator h1 {
+            color: #FFFFFF;
+            font-size: 33px;
+            margin-bottom: 30px;
+            font-weight: 200;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 100%;
+            gap: 14px; /* Adiciona ou ajusta o valor de gap */
         }
 
         label {
-            display: block;
             margin-top: 10px;
+            color: #FFFFFF;
+            font-size: 14px;
         }
 
-        input {
-            width: 100%;
-            padding: 8px;
+        input{
+            font-family: Montserrat;
+            width: 48%;
+            padding: 10px;
             margin-top: 5px;
             box-sizing: border-box;
+            background-color: #FFFFFF;
+            color: #000000;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        input#investmentTime,#interestRate{
+            width: 32%;
+        }
+
+        select{
+            font-family: Montserrat;
+            padding: 9px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            background-color: #FFFFFF;
+            color: #000000;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
         }
 
         button {
-            width: 100%;
+            font-family: Montserrat;
+            width: 48%;
             padding: 10px;
-            margin-top: 10px;
-            background-color: #4CAF50;
-            color: white;
+            margin-top: 20px;
+            background-color: #7DB667;
+            color: #FFFFFF;
             border: none;
-            border-radius: 5px;
+            border-radius: 20px;
             cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            font-weight: bold;
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #68A255;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        #clearButton {
+            background-color: #00008B;
+            margin-right: 4%;
         }
 
         .results {
             margin-top: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .values{
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            border-radius: 20px;
+            background-color: #282828;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            color: #FFFFFF;
+            text-align: center;
+            font-size: 16px;
+
         }
 
         #monthlyBreakdown {
             margin-top: 20px;
             overflow-x: auto;
+            border-radius: 30px;
+            border: 2px solid #7DB667;
         }
 
         #breakdownTable {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse:collapse;
+            background-color: #FFFFFF;
+            color: #7DB667;
+            border-radius: 30px;
         }
 
-        #breakdownTable th, #breakdownTable td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-
-        #investmentChart {
+        .chart-container {
+            background-color: #282828;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            color: #FFFFFF;
             margin-top: 20px;
             width: 100%;
+            max-width: 560px;
+        }
+
+
+        #breakdownTable th, #breakdownTable td {
+            border: 1px solid #7DB667;
+            border-radius: 30px;
+            padding: 18px;
+            text-align: center;
+            color: #000000;
         }
 
         @media (max-width: 600px) {
-            .calculator, .results {
+            .calculator {
                 width: 100%;
                 padding: 15px;
             }
 
             button {
                 padding: 8px;
+                font-size: 14px;
             }
 
             input, select {
                 padding: 6px;
+                font-size: 14px;
             }
         }
 
@@ -97,37 +191,37 @@
 </head>
 <body>
     <div class="calculator">
-        <h1>Calculadora de Juros Compostos</h1>
-        <label for="initialAmount">Aporte Inicial (R$):</label>
-        <input type="number" id="initialAmount">
-
-        <label for="monthlyAmount">Aporte Mensal (R$):</label>
-        <input type="number" id="monthlyAmount">
-
-        <label for="interestRate">Taxa de Juros (%):</label>
-        <input type="number" id="interestRate">
-
-        <label for="rateType">Tipo de Taxa de Juros:</label>
-        <select id="rateType">
-            <option value="monthly">Mensal</option>
-            <option value="annual">Anual</option>
-        </select>
-
-        <label for="investmentTime">Tempo de Investimento:</label>
-        <input type="number" id="investmentTime">
-
-        <label for="timeUnit">Unidade de Tempo:</label>
-        <select id="timeUnit">
-            <option value="months">Meses</option>
-            <option value="years">Anos</option>
-        </select>
-
-        <button onClick="calculate()">Calcular</button>
+        <h1>calculadora de Investimento</h1>
+        <div class="form-group">
+            <input type="text" id="initialAmount" placeholder="Aporte Inicial (R$):" oninput="applyCurrencyMask(this)">
+            <input type="text" id="monthlyAmount" placeholder="Aporte Mensal (R$)" oninput="applyCurrencyMask(this)">
+        </div>
+        <div class="form-group">
+            <input type="number" placeholder="Tempo de Investimento" id="investmentTime">
+            <select id="timeUnit" aria-placeholder="Tempo">
+                <option value="months">Meses</option>
+                <option value="years">Anos</option>
+            </select>
+            <input type="number" placeholder="Taxa de Juros (%)" id="interestRate">
+            <select id="rateType">
+                <option value="monthly">Mensal</option>
+                <option value="annual">Anual</option>
+            </select>
+        </div>
+        <div class="button-group">
+            <button id="clearButton" onClick="clearFields()">Limpar</button>
+            <button onClick="calculate()">Calcular</button>
+        </div>
     </div>
-    <div class="results" id="resultsDiv" style="display: none;">
+
+    <div class="values">
         <div id="finalValue"></div>
         <div id="totalInvested"></div>
         <div id="totalInterest"></div>
+    </div>
+
+    <div class="results" id="resultsDiv" style="display: none;">
+        
         <div id="monthlyBreakdown">
             <table id="breakdownTable">
                 <thead>
@@ -141,7 +235,9 @@
                 <tbody></tbody>
             </table>
         </div>
-        <canvas id="investmentChart"></canvas>
+        <div class="chart-container">
+            <canvas id="investmentChart"></canvas>
+        </div>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -163,14 +259,24 @@
             return parseFloat(value.replace(/\D/g, '')) / 100;
         }
 
+        function clearFields() {
+            document.getElementById('initialAmount').value = '';
+            document.getElementById('monthlyAmount').value = '';
+            document.getElementById('investmentTime').value = '';
+            document.getElementById('timeUnit').value = 'months';
+            document.getElementById('interestRate').value = '';
+            document.getElementById('rateType').value = 'monthly';
+            document.getElementById('finalValue').innerText = '';
+            document.getElementById('totalInvested').innerText = '';
+            document.getElementById('totalInterest').innerText = '';
+            document.querySelector('#breakdownTable tbody').innerHTML = '';
+            document.getElementById('resultsDiv').style.display = 'none';
+        }
+
         function applyCurrencyMask(element) {
             let value = element.value.replace(/\D/g, '');
-            if (value.length === 0) {
-                element.value = '';
-                return;
-            }
-            value = parseFloat(value);
-            element.value = formatCurrency(value);
+            value = (parseInt(value) / 100).toFixed(2);
+            element.value = formatCurrency(parseFloat(value));
         }
 
         async function calculate() {
@@ -238,65 +344,65 @@
 
             const ctx = document.getElementById('investmentChart').getContext('2d');
             new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: monthlyData,
-                    datasets: [
-                        {
-                            label: 'Aporte',
-                            data: aporteData,
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1,
-                            fill: false
-                        },
-                        {
-                            label: 'Rendimento',
-                            data: rendimentoData,
-                            borderColor: 'rgba(153, 102, 255, 1)',
-                            borderWidth: 1,
-                            fill: false
-                        },
-                        {
-                            label: 'CDB (100% CDI)',
-                            data: cdbData,
-                            borderColor: 'rgba(255, 159, 64, 1)',
-                            borderWidth: 1,
-                            fill: false
-                        },
-                        {
-                            label: 'Inflação',
-                            data: inflationData,
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1,
-                            fill: false
-                        },
-                        {
-                            label: 'Dólar',
-                            data: dollarData,
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1,
-                            fill: false
+            type: 'line',
+            data: {
+                labels: monthlyData,
+                datasets: [
+                    {
+                        label: 'Aporte',
+                        data: aporteData,
+                        borderColor: '#7DB667', // Cor verde usado nos botões
+                        borderWidth: 1,
+                        fill: false
+                    },
+                    {
+                        label: 'Rendimento',
+                        data: rendimentoData,
+                        borderColor: '#68A255', // Uma tonalidade de verde mais escura usada nos botões
+                        borderWidth: 1,
+                        fill: false
+                    },
+                    {
+                        label: 'CDB (100% CDI)',
+                        data: cdbData,
+                        borderColor: '#00008B', // Azul usado no botão de limpeza
+                        borderWidth: 1,
+                        fill: false
+                    },
+                    {
+                        label: 'Inflação',
+                        data: inflationData,
+                        borderColor: '#FFFFFF', // Branco, uma escolha padrão para contrastar com o fundo escuro
+                        borderWidth: 1,
+                        fill: false
+                    },
+                    /*{
+                        label: 'Dólar',
+                        data: dollarData,
+                        borderColor: '#FFFFFF', // Novamente, branco para contraste
+                        borderWidth: 1,
+                        fill: false
+                    }*/
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Mês'
                         }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Mês'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Valor (R$)'
-                            }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Valor (R$)'
                         }
                     }
                 }
-            });
+            }
+        });
         }
 
         function formatCurrency(value) {
