@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+        body {
+            font-family: Montserrat;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            background: linear-gradient(0deg, #343434, #181818);
+            color: #FFFFFF;
+            padding: 20px;
+        }
+
+        .calculator {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            border-radius: 20px;
+            background-color: #282828;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            color: #FFFFFF;
+            margin-top: 10px;
+        }
+
+        .calculator h1 {
+            color: #FFFFFF;
+            font-size: 33px;
+            margin-bottom: 30px;
+            font-weight: 200;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 100%;
+            gap: 14px; /* Adiciona ou ajusta o valor de gap */
+        }
+
+        label {
+            margin-top: 10px;
+            color: #FFFFFF;
+            font-size: 14px;
+        }
+
+        input{
+            font-family: Montserrat;
+            width: 48%;
+            padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            background-color: #FFFFFF;
+            color: #000000;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        
+        input#investmentTime,#interestRate{
+            width: 32%;
+        }
+
+        select{
+            font-family: Montserrat;
+            padding: 9px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            background-color: #FFFFFF;
+            color: #000000;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button {
+            font-family: Montserrat;
+            width: 48%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #7DB667;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #68A255;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        #clearButton {
+            background-color: #00008B;
+            margin-right: 4%;
+        }
+
+        .results {
+            margin-top: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .values{
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            border-radius: 20px;
+            background-color: #282828;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            color: #FFFFFF;
+            text-align: center;
+            font-size: 16px;
+
+        }
+
+        #monthlyBreakdown {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        #breakdownTable {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #FFFFFF;
+            color: #000000;
+        }
+
+        #breakdownTable th, #breakdownTable td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            color: #000000;
+        }
+
+        @media (max-width: 600px) {
+            .calculator {
+                width: 100%;
+                padding: 15px;
+            }
+
+            button {
+                padding: 8px;
+                font-size: 14px;
+            }
+
+            input, select {
+                padding: 6px;
+                font-size: 14px;
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>calculadora de Investimento</h1>
+        <div class="form-group">
+            <input type="text" id="initialAmount" placeholder="Aporte Inicial (R$):" oninput="applyCurrencyMask(this)">
+            <input type="text" id="monthlyAmount" placeholder="Aporte Mensal (R$)" oninput="applyCurrencyMask(this)">
+        </div>
+        <div class="form-group">
+            <input type="number" placeholder="Tempo de Investimento" id="investmentTime">
+            <select id="timeUnit" aria-placeholder="Tempo">
+                <option value="months">Meses</option>
+                <option value="years">Anos</option>
+            </select>
+            <input type="number" placeholder="Taxa de Juros (%)" id="interestRate">
+            <select id="rateType">
+                <option value="monthly">Mensal</option>
+                <option value="annual">Anual</option>
+            </select>
+        </div>
+        <div class="button-group">
+            <button id="clearButton" onClick="clearFields()">Limpar</button>
+            <button onClick="calculate()">Calcular</button>
+        </div>
+    </div>
+
+    <div class="values">
+        <div id="finalValue"></div>
+        <div id="totalInvested"></div>
+        <div id="totalInterest"></div>
+    </div>
+    
+    
+    <div class="results" id="resultsDiv" style="display: none;">
+        
+        <div id="monthlyBreakdown">
+            <table id="breakdownTable">
+                <thead>
+                    <tr>
+                        <th>Mês</th>
+                        <th>Aporte</th>
+                        <th>Rendimento</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <!--<canvas id="investmentChart"></canvas>-->
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        function simulateRates() {
+            return {
+                inflationRate: 0.03,  // Simulação de 3% ao ano
+                cdbRate: 10.4,  // Simulação de 6% ao ano
+                dollarRate: 0.05  // Simulação de 5% ao ano
+            };
+        }
+
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function parseCurrency(value) {
+            return parseFloat(value.replace(/\D/g, '')) / 100;
+        }
+
+        function clearFields() {
+            document.getElementById('initialAmount').value = '';
+            document.getElementById('monthlyAmount').value = '';
+            document.getElementById('investmentTime').value = '';
+            document.getElementById('timeUnit').value = 'months';
+            document.getElementById('interestRate').value = '';
+            document.getElementById('rateType').value = 'monthly';
+            document.getElementById('finalValue').innerText = '';
+            document.getElementById('totalInvested').innerText = '';
+            document.getElementById('totalInterest').innerText = '';
+            document.querySelector('#breakdownTable tbody').innerHTML = '';
+            document.getElementById('resultsDiv').style.display = 'none';
+        }
+
+        function applyCurrencyMask(element) {
+            let value = element.value.replace(/\D/g, '');
+            value = (parseInt(value) / 100).toFixed(2);
+            element.value = formatCurrency(parseFloat(value));
+        }
+
+        async function calculate() {
+            const initialAmount = parseCurrency(document.getElementById('initialAmount').value);
+            const monthlyAmount = parseCurrency(document.getElementById('monthlyAmount').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            const rateType = document.getElementById('rateType').value;
+            const investmentTime = parseFloat(document.getElementById('investmentTime').value);
+            const timeUnit = document.getElementById('timeUnit').value;
+
+            const { inflationRate, cdbRate, dollarRate } = simulateRates();
+
+            let months = timeUnit === 'years' ? investmentTime * 12 : investmentTime;
+            let monthlyRate = rateType === 'annual' ? (interestRate / 100) / 12 : interestRate / 100;
+            let monthlyInflationRate = inflationRate / 12;
+            let monthlyCdbRate = cdbRate / 12;
+            let monthlyDollarRate = dollarRate / 12;
+
+            let totalInvested = initialAmount;
+            let totalInterest = 0;
+            let totalAmount = initialAmount;
+            let breakdownHTML = '';
+            let monthlyData = [];
+            let aporteData = [];
+            let rendimentoData = [];
+            let cdbData = [];
+            let inflationData = [];
+            let dollarData = [];
+            let cdbTotal = initialAmount;
+            let inflationTotal = initialAmount;
+            let dollarTotal = initialAmount;
+
+            for (let i = 0; i < months; i++) {
+                totalAmount += monthlyAmount;
+                totalInvested += monthlyAmount;
+                let interest = totalAmount * monthlyRate;
+                totalInterest += interest;
+                totalAmount += interest;
+
+                cdbTotal += monthlyAmount + (cdbTotal * monthlyCdbRate);
+                inflationTotal += monthlyAmount + (inflationTotal * monthlyInflationRate);
+                dollarTotal += monthlyAmount + (dollarTotal * monthlyDollarRate);
+
+                breakdownHTML += `<tr>
+                    <td>${i + 1}</td>
+                    <td>${formatCurrency(monthlyAmount)}</td>
+                    <td>${formatCurrency(interest)}</td>
+                    <td>${formatCurrency(totalAmount)}</td>
+                </tr>`;
+
+                monthlyData.push(i + 1);
+                aporteData.push(monthlyAmount);
+                rendimentoData.push(interest);
+                cdbData.push(cdbTotal.toFixed(2));
+                inflationData.push(inflationTotal.toFixed(2));
+                dollarData.push(dollarTotal.toFixed(2));
+            }
+
+            document.getElementById('finalValue').innerText = `Valor Total Final: ${formatCurrency(totalAmount)}`;
+            document.getElementById('totalInvested').innerText = `Total Investido: ${formatCurrency(totalInvested)}`;
+            document.getElementById('totalInterest').innerText = `Total de Juros: ${formatCurrency(totalInterest)}`;
+            document.querySelector('#breakdownTable tbody').innerHTML = breakdownHTML;
+
+            document.getElementById('resultsDiv').style.display = 'block';
+
+            /*const ctx = document.getElementById('investmentChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: monthlyData,
+                    datasets: [
+                        {
+                            label: 'Aporte',
+                            data: aporteData,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1,
+                            fill: false
+                        },
+                        {
+                            label: 'Rendimento',
+                            data: rendimentoData,
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 1,
+                            fill: false
+                        },
+                        {
+                            label: 'CDB (100% CDI)',
+                            data: cdbData,
+                            borderColor: 'rgba(255, 159, 64, 1)',
+                            borderWidth: 1,
+                            fill: false
+                        },
+                        {
+                            label: 'Inflação',
+                            data: inflationData,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1,
+                            fill: false
+                        },
+                        {
+                            label: 'Dólar',
+                            data: dollarData,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Mês'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Valor (R$)'
+                            }
+                        }
+                    }
+                }
+            });*/
+        }
+
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+    </script>
+</body>
+</html>
