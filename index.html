@@ -158,7 +158,10 @@
             color: #FFFFFF;
             margin-top: 20px;
             width: 100%;
-            max-width: 600px;
+            max-width: 550px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
 
@@ -168,6 +171,46 @@
             padding: 18px;
             text-align: center;
             color: #000000;
+        }
+
+        .tab {
+            overflow: hidden;
+            border-bottom: 1px solid #ccc;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .tab button {
+            background-color: inherit;
+            margin: 1px;
+            width: 49%;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            background-color: #7DB667;
+            color: white;
+        }
+
+        .tab button:hover {
+            background-color: #00008B;
+            color: white;
+        }
+
+        .tab button.active {
+            background-color: #00008B;
+            color: white;
+        }
+
+        .tabcontent {
+            display: none;
+            border-top: none;
+        }
+
+        .tabcontent.active {
+            display: block;
         }
 
         @media (max-width: 600px) {
@@ -198,6 +241,10 @@
             }
             .values{
                 width: 100%;
+            }
+            .tab button {
+                width: 100%;
+                text-align: center;
             }
         }
 
@@ -235,7 +282,39 @@
     </div>
 
     <div class="results" id="resultsDiv" style="display: none;">
-        
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'Table')" id="defaultTab">Tabela</button>
+            <button class="tablinks" onclick="openTab(event, 'Charts')">Gráficos</button>
+        </div>
+
+        <div id="Table" class="tabcontent">
+            <div id="monthlyBreakdown">
+                <table id="breakdownTable">
+                    <thead>
+                        <tr>
+                            <th>Mês</th>
+                            <th>Aporte</th>
+                            <th>Rendimento</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="Charts" class="tabcontent">
+            <div class="chart-container">
+                <canvas id="investmentChart" width="600" height="300"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="pieChart" width="600" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!--<div class="results" id="resultsDiv" style="display: none;">
+      
         <div id="monthlyBreakdown">
             <table id="breakdownTable">
                 <thead>
@@ -253,19 +332,19 @@
             <canvas id="investmentChart"></canvas>
         </div>
         <div class="chart-container">
-            <canvas id="barChart"></canvas>
+            <canvas id="pieChart"></canvas>
         </div>
-    </div>
+    </div>-->
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         function simulateRates() {
             return {
-                inflationRate: 4.5,  // Taxa de inflação atualizada
-                cdbRate: 11.0,  // Taxa do CDB atualizada
+                inflationRate: 0.045,  // Taxa de inflação atualizada
+                /*cdbRate: 11.0,  // Taxa do CDB atualizada
                 dollarRate: 0.75,  // Taxa do dólar atualizada
-                savingsRate: 0.25  // Taxa da poupança atualizada
+                savingsRate: 0.25  // Taxa da poupança atualizada*/
             };
         }
 
@@ -305,31 +384,51 @@
             const investmentTime = parseFloat(document.getElementById('investmentTime').value);
             const timeUnit = document.getElementById('timeUnit').value;
 
-            const { inflationRate, cdbRate, dollarRate, savingsRate } = simulateRates();
+            const { inflationRate } = simulateRates(); //adicionar novos índices
 
             let months = timeUnit === 'years' ? investmentTime * 12 : investmentTime;
             let monthlyRate = rateType === 'annual' ? (interestRate / 100) / 12 : interestRate / 100;
             let monthlyInflationRate = inflationRate / 12;
-            let monthlyCdbRate = cdbRate / 12;
-            let monthlyDollarRate = dollarRate / 12;
+            //let monthlyCdbRate = cdbRate / 12;
+           //let monthlyDollarRate = dollarRate / 12;
 
             let totalInvested = initialAmount;
             let totalInterest = 0;
             let totalAmount = initialAmount;
-            let savingsTotal = initialAmount;
-            let savingsData = [];
+            //let savingsTotal = initialAmount;
+            //let savingsData = [];
             let breakdownHTML = '';
             let monthlyData = [];
             let aporteData = [];
             let rendimentoData = [];
-            let cdbData = [];
+            //let cdbData = [];
             let inflationData = [];
-            let dollarData = [];
-            let cdbTotal = initialAmount;
-            let inflationTotal = initialAmount;
-            let dollarTotal = initialAmount;
+            //let dollarData = [];
+            //let cdbTotal = initialAmount;
+            //let inflationTotal = initialAmount;
+            //let dollarTotal = initialAmount;
 
             for (let i = 0; i < months; i++) {
+                totalAmount += monthlyAmount;
+                totalInvested += monthlyAmount;
+                let interest = totalAmount * monthlyRate;
+                totalInterest += interest;
+                totalAmount += interest;
+
+                breakdownHTML += `<tr>
+                    <td>${i + 1}</td>
+                    <td>${formatCurrency(monthlyAmount)}</td>
+                    <td>${formatCurrency(interest)}</td>
+                    <td>${formatCurrency(totalAmount)}</td>
+                </tr>`;
+
+                monthlyData.push(i + 1);
+                aporteData.push(monthlyAmount);
+                rendimentoData.push(interest);
+                inflationData.push(totalAmount * monthlyInflationRate);
+            }
+
+            /*for (let i = 0; i < months; i++) {
                 savingsTotal += monthlyAmount * (1 + savingsRate / 100);
                 savingsData.push(savingsTotal.toFixed(2));
                 totalAmount += monthlyAmount;
@@ -355,7 +454,7 @@
                 cdbData.push(cdbTotal.toFixed(2));
                 inflationData.push(inflationTotal.toFixed(2));
                 dollarData.push(dollarTotal.toFixed(2));
-            }
+            }*/
 
             document.getElementById('finalValue').innerText = `Valor Total Final: ${formatCurrency(totalAmount)}`;
             document.getElementById('totalInvested').innerText = `Total Investido: ${formatCurrency(totalInvested)}`;
@@ -364,27 +463,41 @@
 
             document.getElementById('resultsDiv').style.display = 'block';
 
-            let barChartData = {
-                labels: monthlyData,
-                datasets: [
-                    {
-                        label: 'Poupança',
-                        data: savingsData,
-                        backgroundColor: '#FF6384', // Vermelho para poupança
-                        hoverBackgroundColor: ['#FF6384']
-                    },
-                    {
-                        label: 'CDB (100% CDI)',
-                        data: cdbData,
-                        backgroundColor: '#00008B', // Azul usado no botão de limpeza
-                        borderWidth: 1,
-                    }
-                ]
-            };
-
-            new Chart(document.getElementById('barChart').getContext('2d'), {
-                type: 'bar',
-                data: barChartData,
+            new Chart(document.getElementById('investmentChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: monthlyData,
+                    datasets: [
+                        {
+                            label: 'Valor Total Investido',
+                            data: aporteData,
+                            borderColor: '#7DB667',
+                            borderWidth: 1,
+                            fill: false
+                        },
+                        {
+                            label: 'Valor Total Final',
+                            data: rendimentoData,
+                            borderColor: 'green',
+                            borderWidth: 1,
+                            fill: false
+                        },
+                        {
+                            label: 'Total de Juros',
+                            data: inflationData,
+                            borderColor: 'black',
+                            borderWidth: 1,
+                            fill: false
+                        },
+                        /*{
+                            label: 'Inflação',
+                            data: inflationData,
+                            borderColor: 'red',
+                            borderWidth: 1,
+                            fill: false
+                        }*/
+                    ]
+                },
                 options: {
                     responsive: true,
                     scales: {
@@ -395,7 +508,6 @@
                             }
                         },
                         y: {
-                            beginAtZero: true,
                             title: {
                                 display: true,
                                 text: 'Valor (R$)'
@@ -405,74 +517,48 @@
                 }
             });
 
-            const ctx = document.getElementById('investmentChart').getContext('2d');
-            new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: monthlyData,
-                datasets: [
-                    {
-                        label: 'Aporte',
-                        data: aporteData,
-                        borderColor: '#7DB667', // Cor verde usado nos botões
-                        borderWidth: 1,
-                        fill: false
-                    },
-                    {
-                        label: 'Rendimento',
-                        data: rendimentoData,
-                        borderColor: '#68A255', // Uma tonalidade de verde mais escura usada nos botões
-                        borderWidth: 1,
-                        fill: false
-                    },
-                    {
-                        label: 'CDB (100% CDI)',
-                        data: cdbData,
-                        borderColor: '#00008B', // Azul usado no botão de limpeza
-                        borderWidth: 1,
-                        fill: false
-                    },
-                    {
-                        label: 'Inflação',
-                        data: inflationData,
-                        borderColor: '#FFFFFF', // Branco, uma escolha padrão para contrastar com o fundo escuro
-                        borderWidth: 1,
-                        fill: false
-                    },
-                    {
-                        label: 'Dólar',
-                        data: dollarData,
-                        borderColor: '#FFFFFF', // Novamente, branco para contraste
-                        borderWidth: 1,
-                        fill: false
-                    },
-                    {
-                        label: 'Poupança',
-                        data: savingsData, // Os valores acumulados da poupança
-                        borderColor: 'rgba(153, 102, 255, 1)', // Cor recomendada para poupança
-                        fill: false
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Mês'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Valor (R$)'
-                        }
-                    }
+            new Chart(document.getElementById('pieChart').getContext('2d'), {
+                type: 'pie',
+                data: {
+                    labels: ['Valor Total Investido', 'Valor Total Final', 'Total de Juros', 'Inflação'],
+                    datasets: [{
+                        data: [totalInvested, totalAmount, totalInterest, totalAmount * inflationRate / 100],
+                        backgroundColor: [
+                            '#7DB667',
+                            '#68A255',
+                            '#FF6384',
+                            '#36A2EB'
+                        ],
+                        hoverBackgroundColor: [
+                            '#7DB667',
+                            '#68A255',
+                            '#FF6384',
+                            '#36A2EB'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true
                 }
-            }
-        });
+            });
         }
+
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // Set the default tab to be open
+        document.getElementById("defaultTab").click();
 
         function formatCurrency(value) {
             return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
