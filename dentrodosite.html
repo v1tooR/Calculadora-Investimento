@@ -5,36 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora</title>
     <style>
-        
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-        
+
         body {
             font-family: Montserrat;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
             color: #FFFFFF;
-            padding: 20px;
         }
 
         .calculator {
             width: 100%;
-            max-width: 1200px;
+            max-width: 100%;
             padding: 20px 20px 5px 20px;
             border-radius: 20px;
-            background-color: #E6E6E6;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #282828;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             color: #FFFFFF;
             margin-top: 10px;
         }
 
         .calculator h1 {
-            color: #242424;
+            color: #FFFFFF;
             font-size: 33px;
             margin-bottom: 30px;
-            font-weight: 700;
-            text-align: start;
+            font-weight: 200;
+            text-align: center;
         }
 
         .form-group {
@@ -52,10 +46,26 @@
             font-size: 14px;
         }
 
-        input {
+        input{
             font-family: Montserrat;
-            width: 90%;
+            width: 48%;
             padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            background-color: #FFFFFF;
+            color: #000000;
+            border: none;
+            border-radius: 30px;
+            font-size: 14px;
+        }
+
+        input#investmentTime,#interestRate{
+            width: 70%;
+        }
+
+        select{
+            font-family: Montserrat;
+            padding: 9px;
             margin-top: 5px;
             box-sizing: border-box;
             background-color: #FFFFFF;
@@ -65,50 +75,28 @@
             font-size: 14px;
         }
 
-        input#investmentTime,#interestRate{
-            width: 31%;
-        }
-
-        select {
-            font-family: Montserrat;
-            width: auto;
-            padding: 9px;
-            margin-top: 5px;
-            box-sizing: border-box;
-            background-color: #FFFFFF;
-            color: #00008B;
-            border-radius: 10px;
-            font-size: 14px;
-        }
-
         .button-group {
             display: flex;
             justify-content: space-between;
-            width: 100%; /* Ajuste a largura dos botões */
         }
 
         button {
             font-family: Montserrat;
-            width: 100%;
-            margin-top: 5px;
-            padding: 11px;
+            width: 48%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #7DB667;
             color: #FFFFFF;
             border: none;
-            border-radius: 10px;
+            border-radius: 20px;
             cursor: pointer;
             font-size: 16px;
             text-align: center;
             font-weight: bold;
         }
 
-        #calcular{
-            background-color: #00008B;
-            text-transform: uppercase;
-        }
-
-        #calcular:hover{
-            background-color: #7DB667;
-            transition: 0.2s;
+        button:hover {
+            background-color: #68A255;
         }
 
         button:focus {
@@ -116,31 +104,30 @@
         }
 
         #clearButton {
-            background-color: #E6E6E6;
-            color: #242424;
-            margin-left: 4%;
+            background-color: #00008B;
+            margin-right: 4%;
         }
 
         .results {
             margin-top: 20px;
+            max-width: 100%;
             width: 100%;
-            max-width: 1200px;
         }
 
-        .values {
+        .values{
             display: flex;
             justify-content: space-between;
             width: 100%;
-            max-width: 1200px;
+            max-width: 100%;
             padding: 20px;
             border-radius: 20px;
-            background-color: #E6E6E6;
+            background-color: #282828;
             margin-top: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            color: #242424;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            color: #FFFFFF;
             text-align: center;
             font-size: 16px;
-            font-weight: 500;
+
         }
 
         #monthlyBreakdown {
@@ -152,7 +139,7 @@
 
         #breakdownTable {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse:collapse;
             background-color: #FFFFFF;
             color: #7DB667;
             border-radius: 30px;
@@ -168,20 +155,23 @@
             margin-top: 20px;
             width: 100%;
             max-width: 100%;
+            /*display: flex;
+            justify-content: center;
+            align-items: center;*/
         }
-
+        
         .charts-container {
             display: flex;
             gap: 20px;
             justify-content: space-between;
         }
-
+        
         .line-chart-container, .pie-chart-container {
             width: 100%;
             max-width: 100%;
-            height: 400px;
+            height: 400px; /* Ajuste a altura conforme necessário */
         }
-
+        
         #breakdownTable th, #breakdownTable td {
             border: 1px solid #7DB667;
             border-radius: 30px;
@@ -241,7 +231,7 @@
                 padding: 8px;
                 font-size: 14px;
             }
-
+            
             .form-group {
                 flex-direction: column;
             }
@@ -250,26 +240,28 @@
                 padding: 6px;
                 font-size: 14px;
             }
-
+            input#investmentTime,#interestRate{
+                width: 100%;
+            }
+            
             .chart-container {
                 width: 100%;
             }
-
+        
             .charts-container {
                 flex-direction: column;
                 justify-content: column;
                 gap: 10px;
             }
-
-            .values {
+            .values{
                 width: 100%;
             }
-
             .tab button {
                 width: 100%;
                 text-align: center;
             }
         }
+
     </style>
 </head>
 <body>
@@ -295,6 +287,7 @@
             <button id="clearButton" onClick="clearFields()">Limpar</button>
             <button onClick="calculate()">Calcular</button>
         </div>
+        <p style="text-align: center; margin-top: 20px; font-size: 0.9em; color: #888;">Feito pela MonqueiTech</p>
     </div>
 
     <div class="values">
@@ -302,24 +295,39 @@
         <div id="totalInvested"></div>
         <div id="totalInterest"></div>
     </div>
-    
-    
+
     <div class="results" id="resultsDiv" style="display: none;">
-        
-        <div id="monthlyBreakdown">
-            <table id="breakdownTable">
-                <thead>
-                    <tr>
-                        <th>Mês</th>
-                        <th>Aporte</th>
-                        <th>Rendimento</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'Table')" id="defaultTab">Tabela</button>
+            <button class="tablinks" onclick="openTab(event, 'Charts')">Gráficos</button>
         </div>
-        <!--<canvas id="investmentChart"></canvas>-->
+
+        <div id="Table" class="tabcontent">
+            <div id="monthlyBreakdown">
+                <table id="breakdownTable">
+                    <thead>
+                        <tr>
+                            <th>Mês</th>
+                            <th>Aporte</th>
+                            <th>Rendimento</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="Charts" class="tabcontent">
+            <div class="charts-container">
+                <div class="chart-container line-chart-container">
+                    <canvas id="investmentChart" ></canvas>
+                </div>
+                <div class="chart-container pie-chart-container">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -327,9 +335,10 @@
     <script>
         function simulateRates() {
             return {
-                inflationRate: 0.03,  // Simulação de 3% ao ano
-                cdbRate: 10.4,  // Simulação de 6% ao ano
-                dollarRate: 0.05  // Simulação de 5% ao ano
+                inflationRate: 0.045,  // Taxa de inflação atualizada
+                /*cdbRate: 11.0,  // Taxa do CDB atualizada
+                dollarRate: 0.75,  // Taxa do dólar atualizada
+                savingsRate: 0.25  // Taxa da poupança atualizada*/
             };
         }
 
@@ -362,6 +371,9 @@
         }
 
         async function calculate() {
+
+            //clearGraphsAndTable();
+
             const initialAmount = parseCurrency(document.getElementById('initialAmount').value);
             const monthlyAmount = parseCurrency(document.getElementById('monthlyAmount').value);
             const interestRate = parseFloat(document.getElementById('interestRate').value);
@@ -369,29 +381,53 @@
             const investmentTime = parseFloat(document.getElementById('investmentTime').value);
             const timeUnit = document.getElementById('timeUnit').value;
 
-            const { inflationRate, cdbRate, dollarRate } = simulateRates();
+            const { inflationRate } = simulateRates(); //adicionar novos índices
 
             let months = timeUnit === 'years' ? investmentTime * 12 : investmentTime;
             let monthlyRate = rateType === 'annual' ? (interestRate / 100) / 12 : interestRate / 100;
             let monthlyInflationRate = inflationRate / 12;
-            let monthlyCdbRate = cdbRate / 12;
-            let monthlyDollarRate = dollarRate / 12;
+            //let monthlyCdbRate = cdbRate / 12;
+           //let monthlyDollarRate = dollarRate / 12;
 
             let totalInvested = initialAmount;
             let totalInterest = 0;
             let totalAmount = initialAmount;
+            //let savingsTotal = initialAmount;
+            //let savingsData = [];
             let breakdownHTML = '';
             let monthlyData = [];
             let aporteData = [];
             let rendimentoData = [];
-            let cdbData = [];
+            //let cdbData = [];
             let inflationData = [];
-            let dollarData = [];
-            let cdbTotal = initialAmount;
-            let inflationTotal = initialAmount;
-            let dollarTotal = initialAmount;
+            //let dollarData = [];
+            //let cdbTotal = initialAmount;
+            //let inflationTotal = initialAmount;
+            //let dollarTotal = initialAmount;
 
             for (let i = 0; i < months; i++) {
+                totalAmount += monthlyAmount;
+                totalInvested += monthlyAmount;
+                let interest = totalAmount * monthlyRate;
+                totalInterest += interest;
+                totalAmount += interest;
+
+                breakdownHTML += `<tr>
+                    <td>${i + 1}</td>
+                    <td>${formatCurrency(monthlyAmount)}</td>
+                    <td>${formatCurrency(interest)}</td>
+                    <td>${formatCurrency(totalAmount)}</td>
+                </tr>`;
+
+                monthlyData.push(i + 1);
+                aporteData.push(totalInvested);
+                rendimentoData.push(totalAmount);
+                inflationData.push(totalInterest);
+            }
+
+            /*for (let i = 0; i < months; i++) {
+                savingsTotal += monthlyAmount * (1 + savingsRate / 100);
+                savingsData.push(savingsTotal.toFixed(2));
                 totalAmount += monthlyAmount;
                 totalInvested += monthlyAmount;
                 let interest = totalAmount * monthlyRate;
@@ -415,7 +451,7 @@
                 cdbData.push(cdbTotal.toFixed(2));
                 inflationData.push(inflationTotal.toFixed(2));
                 dollarData.push(dollarTotal.toFixed(2));
-            }
+            }*/
 
             document.getElementById('finalValue').innerText = `Valor Total Final: ${formatCurrency(totalAmount)}`;
             document.getElementById('totalInvested').innerText = `Total Investido: ${formatCurrency(totalInvested)}`;
@@ -424,47 +460,39 @@
 
             document.getElementById('resultsDiv').style.display = 'block';
 
-            /*const ctx = document.getElementById('investmentChart').getContext('2d');
-            new Chart(ctx, {
+            new Chart(document.getElementById('investmentChart').getContext('2d'), {
                 type: 'line',
                 data: {
                     labels: monthlyData,
                     datasets: [
                         {
-                            label: 'Aporte',
+                            label: 'Valor Total Investido',
                             data: aporteData,
-                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderColor: '#7DB667',
                             borderWidth: 1,
                             fill: false
                         },
                         {
-                            label: 'Rendimento',
+                            label: 'Valor Total Final',
                             data: rendimentoData,
-                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderColor: 'green',
                             borderWidth: 1,
                             fill: false
                         },
                         {
-                            label: 'CDB (100% CDI)',
-                            data: cdbData,
-                            borderColor: 'rgba(255, 159, 64, 1)',
+                            label: 'Total de Juros',
+                            data: inflationData,
+                            borderColor: 'black',
                             borderWidth: 1,
                             fill: false
                         },
-                        {
+                        /*{
                             label: 'Inflação',
                             data: inflationData,
-                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderColor: 'red',
                             borderWidth: 1,
                             fill: false
-                        },
-                        {
-                            label: 'Dólar',
-                            data: dollarData,
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1,
-                            fill: false
-                        }
+                        }*/
                     ]
                 },
                 options: {
@@ -484,8 +512,51 @@
                         }
                     }
                 }
-            });*/
+            });
+
+            new Chart(document.getElementById('pieChart').getContext('2d'), {
+                type: 'pie',
+                data: {
+                    labels: ['Valor Total Investido', 'Valor Total Final', 'Total de Juros', 'Inflação'],
+                    datasets: [{
+                        data: [totalInvested, totalAmount, totalInterest, totalInvested - totalAmount], // Assumindo que a diferença representa a inflação
+                        backgroundColor: ['#7DB667', '#68A255', '#FF6384', '#36A2EB'],
+                        hoverBackgroundColor: ['#7DB667', '#68A255', '#FF6384', '#36A2EB']
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
         }
+
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        /*function clearGraphsAndTable() {
+            // Limpa os gráficos
+            var ctx = document.getElementById('investmentChart');
+            var chartInstance = new Chart(ctx, {});
+            ctx = document.getElementById('pieChart');
+            chartInstance = new Chart(ctx, {});
+
+            // Limpa a tabela
+            document.querySelector('#breakdownTable tbody').innerHTML = '';
+        }*/
+
+        // Set the default tab to be open
+        document.getElementById("defaultTab").click();
 
         function formatCurrency(value) {
             return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
