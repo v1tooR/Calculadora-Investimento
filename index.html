@@ -111,6 +111,42 @@
             transition: 0.2s;
         }
 
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
         button:focus {
             outline: none;
         }
@@ -303,12 +339,6 @@
             <p style="text-align: center; font-size: 0.9em; color: #888;">Feito pela MonqueiTech</p>
         </div>
 
-    <div id="banner" style="display: none; text-align: center; margin-top: 20px;">
-        <a href="https://example.com">
-            <img src="https://plus.unsplash.com/premium_photo-1686685571688-e2a2d9035811?q=80&w=1634&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" width="1200px" height="300px" alt="Banner">
-        </a>
-    </div>
-
     <div class="values">
         <div id="finalValue"></div>
         <div id="totalInvested"></div>
@@ -348,6 +378,15 @@
             </div>
         </div>
     </div>
+
+    <div id="bannerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Oferta Especial</h2>
+            <p>Aproveite esta oportunidade incrível!</p>
+            <img src="https://images.unsplash.com/photo-1719937050679-c3a2c9c67b0f?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Banner" style="width: 100%;">
+        </div>
+    </div>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -381,7 +420,6 @@
             document.getElementById('totalInterest').innerText = '';
             document.querySelector('#breakdownTable tbody').innerHTML = '';
             document.getElementById('resultsDiv').style.display = 'none';
-            document.getElementById('banner').style.display = 'none';
         }
 
         function applyCurrencyMask(element) {
@@ -391,13 +429,9 @@
             checkBannerDisplay();
         }
 
-        function checkBannerDisplay() {
-            const initialAmount = parseCurrency(document.getElementById('initialAmount').value);
-            if (initialAmount >= 350000) {
-                document.getElementById('banner').style.display = 'block';
-            } else {
-                document.getElementById('banner').style.display = 'none';
-            }
+        // Função para fechar o modal
+        function closeModal() {
+            document.getElementById('bannerModal').style.display = 'none';
         }
 
         async function calculate() {
@@ -558,6 +592,10 @@
                     responsive: true
                 }
             });
+            // Verificação para exibir o modal de banner
+            if (initialAmount === 350000) {
+                document.getElementById('bannerModal').style.display = 'block';
+            }
         }
 
         function openTab(evt, tabName) {
