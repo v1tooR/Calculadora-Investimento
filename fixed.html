@@ -1,75 +1,130 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
     <style>
-        .custom-widget {
+        .ticket-scroll {
             font-family: Montserrat;
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
             display: flex;
             align-items: center;
-            z-index: 9999;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 5px;
+            background-color: #f9f9f9;
         }
 
-        .circle {
-            background-color: #F26722; /* Cor laranja */
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
+        .ticket-item {
+            text-transform: uppercase;
+            margin-right: 20px;
+            white-space: nowrap;
+        }
+
+        .ticket-content {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-right: 10px;
+            overflow: hidden;
+            width: 100%;
         }
 
-        .circle-content {
+        .stock-container {
             display: flex;
-            flex-direction: column;
-            margin: 0px
-            align-items: center;
+            white-space: nowrap;
+            animation: scroll 20s linear infinite;
         }
 
-        .large-text {
-            font-family: Montserrat;
-            font-size: 30px;
+        @keyframes scroll {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+        .stock-item {
+            font-weight: bold;
+            display: inline-block;
+            margin-right: 20px;
+            font-size: 1rem;
+        }
+
+        .stock-name {
             font-weight: bold;
         }
 
-        .small-text {
-            font-family: Montserrat;
-            font-size: 16px;
+        .stock-change.up {
+            color: lightgreen;
         }
 
-        .rectangle {
-            font-family: Montserrat;
-            background-color: #FDBC3B; /* Cor amarela */
-            border-radius: 20px;
-            padding: 5px 10px;
-            color: #00342D;
-            font-size: 14px
-            font-weight: 800;
-            text-align: start;
+        .stock-change.down {
+            color: red;
         }
 
     </style>
 </head>
 <body>
-    <div class="custom-widget">
-        <div class="circle">
-          <div class="circle-content">
-            <span class="large-text">+35</span>
-            <span class="small-text">mi</span>
+    <div class="ticket-scroll">
+        <div class="ticket-item">A <b>ÚNICA</b> GESTORA <b>INDEPENDENTE</b> DO BRASIL</div>
+        <div class="ticket-content">
+          <div class="stock-container">
+            <div class="stock-item">
+              <span class="stock-name">Ambev</span>
+              <span class="stock-change up">+1.11%</span>
+            </div>
+            <div class="stock-item">
+              <span class="stock-name">Banco do Brasil</span>
+              <span class="stock-change down">-0.80%</span>
+            </div>
+            <div class="stock-item">
+              <span class="stock-name">Itaúsa PN</span>
+              <span class="stock-change down">+1.45%</span>
+            </div>
+            <div class="stock-item">
+                <span class="stock-name">Totvs ON</span>
+                <span class="stock-change up">+0.05%</span>
+            </div>
+            <div class="stock-item">
+                <span class="stock-name">Usiminas PNA</span>
+                <span class="stock-change down">-3.15%</span>
+            </div>
+            <div class="stock-item">
+                <span class="stock-name">Vale ON</span>
+                <span class="stock-change down">-1.35%</span>
+            </div>
+            <div class="stock-item">
+                <span class="stock-name">CSN Mineração ON</span>
+                <span class="stock-change down">-1.05%</span>
+            </div>
+            <div class="stock-item">
+                <span class="stock-name">Vamos ON</span>
+                <span class="stock-change up">+6.23%</span>
+            </div>
+            <div class="stock-item">
+                <span class="stock-name">Taesa Unit</span>
+                <span class="stock-change up">+1.58%</span>
+            </div>
+            <div class="stock-item">
+                <span class="stock-name">Ultrapar ON</span>
+                <span class="stock-change up">+1.45%</span>
+            </div>
+            <!-- Adicione mais itens de ações conforme necessário -->
           </div>
         </div>
-        <div class="rectangle">
-          <span>de visitantes <br>até hoje</span>
-        </div>
-      </div>
+    </div>
+    
+    <script>
+        const stockContainer = document.querySelector('.stock-container');
+        const ticketContent = document.querySelector('.ticket-content');
+      
+        ticketContent.addEventListener('mouseenter', () => {
+          stockContainer.style.animationPlayState = 'paused';
+        });
+      
+        ticketContent.addEventListener('mouseleave', () => {
+          stockContainer.style.animationPlayState = 'running';
+        });
+    </script>
+      
 </body>
 </html>
