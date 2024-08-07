@@ -310,21 +310,19 @@
     </head>
     <body>
         <div class="calculator">
-            <h1>calculadora de Investimento</h1>
+            <h1>Calculadora de Investimento</h1>
             <div class="form-group">
                 <input type="text" id="initialAmount" placeholder="Aporte Inicial (R$):" oninput="applyCurrencyMask(this)">
-
-                    <input type="number" placeholder="Tempo de Investimento" id="investmentTime">
-                    <select id="timeUnit" aria-placeholder="Tempo">
-                        <option value="months">Meses</option>
-                        <option value="years">Anos</option>
-                    </select>
-                    <input type="number" placeholder="Taxa de Juros (%)" id="interestRate">
-                    <select id="rateType">
-                        <option value="monthly">Mensal</option>
-                        <option value="annual">Anual</option>
-                    </select>
-
+                <input type="number" placeholder="Tempo de Investimento" id="investmentTime">
+                <select id="timeUnit">
+                    <option value="months">Meses</option>
+                    <option value="years">Anos</option>
+                </select>
+                <input type="number" placeholder="Taxa de Juros (%)" id="interestRate">
+                <select id="rateType">
+                    <option value="monthly">Mensal</option>
+                    <option value="annual">Anual</option>
+                </select>
             </div>
             
             <div class="form-group">
@@ -335,58 +333,54 @@
                 </div>
             </div>
             
-            
             <p style="text-align: center; font-size: 0.9em; color: #888;">Feito pela MonqueiTech</p>
         </div>
-
-    <div class="values">
-        <div id="finalValue"></div>
-        <div id="totalInvested"></div>
-        <div id="totalInterest"></div>
-    </div>
-
-    <div class="results" id="resultsDiv" style="display: none;">
-        <div class="tab">
-            <button class="tablinks" onclick="openTab(event, 'Table')" id="defaultTab">Tabela</button>
-            <button class="tablinks" onclick="openTab(event, 'Charts')">Gráficos</button>
+    
+        <div id="banner" style="display: none; text-align: center; margin-top: 20px;">
+            <a href="https://example.com">
+                <img src="https://via.placeholder.com/1228x400.png?text=Banner+1228x400" alt="Banner">
+            </a>
         </div>
-
-        <div id="Table" class="tabcontent">
-            <div id="monthlyBreakdown">
-                <table id="breakdownTable">
-                    <thead>
-                        <tr>
-                            <th>Mês</th>
-                            <th>Aporte</th>
-                            <th>Rendimento</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+    
+        <div class="values">
+            <div id="finalValue"></div>
+            <div id="totalInvested"></div>
+            <div id="totalInterest"></div>
+        </div>
+    
+        <div class="results" id="resultsDiv" style="display: none;">
+            <div class="tab">
+                <button class="tablinks" onclick="openTab(event, 'Table')" id="defaultTab">Tabela</button>
+                <button class="tablinks" onclick="openTab(event, 'Charts')">Gráficos</button>
             </div>
-        </div>
-
-        <div id="Charts" class="tabcontent">
-            <div class="charts-container">
-                <div class="chart-container line-chart-container">
-                    <canvas id="investmentChart" width="600" height="400"></canvas>
-                </div>
-                <div class="chart-container pie-chart-container">
-                    <canvas id="pieChart" width="600" height="400"></canvas>
+    
+            <div id="Table" class="tabcontent">
+                <div id="monthlyBreakdown">
+                    <table id="breakdownTable">
+                        <thead>
+                            <tr>
+                                <th>Mês</th>
+                                <th>Aporte</th>
+                                <th>Rendimento</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
             </div>
+    
+            <div id="Charts" class="tabcontent">
+                <div class="charts-container">
+                    <div class="chart-container line-chart-container">
+                        <canvas id="investmentChart" width="600" height="400"></canvas>
+                    </div>
+                    <div class="chart-container pie-chart-container">
+                        <canvas id="pieChart" width="600" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <div id="bannerModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Oferta Especial</h2>
-            <p>Aproveite esta oportunidade incrível!</p>
-            <img src="https://images.unsplash.com/photo-1719937050679-c3a2c9c67b0f?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Banner" style="width: 100%;">
-        </div>
-    </div>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -435,6 +429,16 @@
         }
 
         async function calculate() {
+
+            const initialAmountElement = document.getElementById('initialAmount');
+            const monthlyAmountElement = document.getElementById('monthlyAmount');
+            const interestRateElement = document.getElementById('interestRate');
+            const investmentTimeElement = document.getElementById('investmentTime');
+
+            if (!initialAmountElement.value || !monthlyAmountElement.value || !interestRateElement.value || !investmentTimeElement.value) {
+                alert('Por favor, preencha todos os campos.');
+                return;
+            }
 
             //clearGraphsAndTable();
 
@@ -581,11 +585,11 @@
             new Chart(document.getElementById('pieChart').getContext('2d'), {
                 type: 'pie',
                 data: {
-                    labels: ['Valor Total Investido', 'Valor Total Final', 'Total de Juros', 'Inflação'],
+                    labels: ['Valor Total Investido', 'Total de Juros'], // Labels atualizados
                     datasets: [{
-                        data: [totalInvested, totalAmount, totalInterest], // Assumindo que a diferença representa a inflação
-                        backgroundColor: ['#7DB667', '#68A255', '#FF6384'],
-                        hoverBackgroundColor: ['#7DB667', '#68A255', '#FF6384']
+                        data: [totalInvested, totalInterest], // Dados atualizados
+                        backgroundColor: ['#7DB667', '#FF6384'], // Cores correspondentes
+                        hoverBackgroundColor: ['#7DB667', '#FF6384'] // Cores de hover correspondentes
                     }]
                 },
                 options: {
@@ -593,8 +597,9 @@
                 }
             });
             // Verificação para exibir o modal de banner
-            if (initialAmount === 350000) {
-                document.getElementById('bannerModal').style.display = 'block';
+              // Exibir o banner se o valor total final for igual ou superior a 350.000
+            if (totalAmount >= 350000) {
+                document.getElementById('banner').style.display = 'block';
             }
         }
 
