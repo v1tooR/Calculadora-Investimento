@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora</title>
     <style>
+        
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-
+        
         body {
             font-family: Montserrat;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
             color: #FFFFFF;
+            padding: 20px;
         }
 
         .calculator {
@@ -17,18 +23,18 @@
             max-width: 100%;
             padding: 20px 20px 5px 20px;
             border-radius: 20px;
-            background-color: #282828;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            background-color: #E6E6E6;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             color: #FFFFFF;
             margin-top: 10px;
         }
 
         .calculator h1 {
-            color: #FFFFFF;
+            color: #242424;
             font-size: 33px;
             margin-bottom: 30px;
-            font-weight: 200;
-            text-align: center;
+            font-weight: 700;
+            text-align: start;
         }
 
         .form-group {
@@ -46,26 +52,10 @@
             font-size: 14px;
         }
 
-        input{
+        input {
             font-family: Montserrat;
-            width: 48%;
+            width: 90%;
             padding: 10px;
-            margin-top: 5px;
-            box-sizing: border-box;
-            background-color: #FFFFFF;
-            color: #000000;
-            border: none;
-            border-radius: 30px;
-            font-size: 14px;
-        }
-
-        input#investmentTime,#interestRate{
-            width: 70%;
-        }
-
-        select{
-            font-family: Montserrat;
-            padding: 9px;
             margin-top: 5px;
             box-sizing: border-box;
             background-color: #FFFFFF;
@@ -75,28 +65,86 @@
             font-size: 14px;
         }
 
+        input#investmentTime,#interestRate{
+            width: 31%;
+        }
+
+        select {
+            font-family: Montserrat;
+            width: auto;
+            padding: 9px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            background-color: #FFFFFF;
+            color: #00008B;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
         .button-group {
             display: flex;
             justify-content: space-between;
+            width: 100%; /* Ajuste a largura dos botões */
         }
 
         button {
             font-family: Montserrat;
-            width: 48%;
-            padding: 10px;
-            margin-top: 20px;
-            background-color: #7DB667;
+            width: 100%;
+            margin-top: 5px;
+            padding: 11px;
             color: #FFFFFF;
             border: none;
-            border-radius: 20px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
             text-align: center;
             font-weight: bold;
         }
 
-        button:hover {
-            background-color: #68A255;
+        #calcular{
+            background-color: #00008B;
+            text-transform: uppercase;
+        }
+
+        #calcular:hover{
+            background-color: #7DB667;
+            transition: 0.2s;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
 
         button:focus {
@@ -104,30 +152,31 @@
         }
 
         #clearButton {
-            background-color: #00008B;
-            margin-right: 4%;
+            background-color: #E6E6E6;
+            color: #242424;
+            margin-left: 4%;
         }
 
         .results {
             margin-top: 20px;
-            max-width: 100%;
             width: 100%;
+            max-width: 1200px;
         }
 
-        .values{
+        .values {
             display: flex;
             justify-content: space-between;
             width: 100%;
-            max-width: 100%;
+            max-width: 1200px;
             padding: 20px;
             border-radius: 20px;
-            background-color: #282828;
+            background-color: #E6E6E6;
             margin-top: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            color: #FFFFFF;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            color: #242424;
             text-align: center;
             font-size: 16px;
-
+            font-weight: 500;
         }
 
         #monthlyBreakdown {
@@ -139,7 +188,7 @@
 
         #breakdownTable {
             width: 100%;
-            border-collapse:collapse;
+            border-collapse: collapse;
             background-color: #FFFFFF;
             color: #7DB667;
             border-radius: 30px;
@@ -155,23 +204,20 @@
             margin-top: 20px;
             width: 100%;
             max-width: 100%;
-            /*display: flex;
-            justify-content: center;
-            align-items: center;*/
         }
-        
+
         .charts-container {
             display: flex;
             gap: 20px;
             justify-content: space-between;
         }
-        
+
         .line-chart-container, .pie-chart-container {
             width: 100%;
             max-width: 100%;
-            height: 400px; /* Ajuste a altura conforme necessário */
+            height: 400px;
         }
-        
+
         #breakdownTable th, #breakdownTable td {
             border: 1px solid #7DB667;
             border-radius: 30px;
@@ -231,7 +277,7 @@
                 padding: 8px;
                 font-size: 14px;
             }
-            
+
             .form-group {
                 flex-direction: column;
             }
@@ -240,95 +286,101 @@
                 padding: 6px;
                 font-size: 14px;
             }
-            input#investmentTime,#interestRate{
-                width: 100%;
-            }
-            
+
             .chart-container {
                 width: 100%;
             }
-        
+
             .charts-container {
                 flex-direction: column;
                 justify-content: column;
                 gap: 10px;
             }
-            .values{
+
+            .values {
                 width: 100%;
             }
+
             .tab button {
                 width: 100%;
                 text-align: center;
             }
         }
-
     </style>
-</head>
-<body>
-    <div class="calculator">
-        <h1>calculadora de Investimento</h1>
-        <div class="form-group">
-            <input type="text" id="initialAmount" placeholder="Aporte Inicial (R$):" oninput="applyCurrencyMask(this)">
-            <input type="text" id="monthlyAmount" placeholder="Aporte Mensal (R$)" oninput="applyCurrencyMask(this)">
-        </div>
-        <div class="form-group">
-            <input type="number" placeholder="Tempo de Investimento" id="investmentTime">
-            <select id="timeUnit" aria-placeholder="Tempo">
-                <option value="months">Meses</option>
-                <option value="years">Anos</option>
-            </select>
-            <input type="number" placeholder="Taxa de Juros (%)" id="interestRate">
-            <select id="rateType">
-                <option value="monthly">Mensal</option>
-                <option value="annual">Anual</option>
-            </select>
-        </div>
-        <div class="button-group">
-            <button id="clearButton" onClick="clearFields()">Limpar</button>
-            <button onClick="calculate()">Calcular</button>
-        </div>
-        <p style="text-align: center; margin-top: 20px; font-size: 0.9em; color: #888;">Feito pela MonqueiTech</p>
-    </div>
-
-    <div class="values">
-        <div id="finalValue"></div>
-        <div id="totalInvested"></div>
-        <div id="totalInterest"></div>
-    </div>
-
-    <div class="results" id="resultsDiv" style="display: none;">
-        <div class="tab">
-            <button class="tablinks" onclick="openTab(event, 'Table')" id="defaultTab">Tabela</button>
-            <button class="tablinks" onclick="openTab(event, 'Charts')">Gráficos</button>
-        </div>
-
-        <div id="Table" class="tabcontent">
-            <div id="monthlyBreakdown">
-                <table id="breakdownTable">
-                    <thead>
-                        <tr>
-                            <th>Mês</th>
-                            <th>Aporte</th>
-                            <th>Rendimento</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+    </head>
+    <body>
+        <div class="calculator">
+            <h1>Calculadora de Investimento</h1>
+            <div class="form-group">
+                <input type="text" id="initialAmount" placeholder="Aporte Inicial (R$):" oninput="applyCurrencyMask(this)">
+                <input type="number" placeholder="Tempo de Investimento" id="investmentTime">
+                <select id="timeUnit">
+                    <option value="months">Meses</option>
+                    <option value="years">Anos</option>
+                </select>
+                <input type="number" placeholder="Taxa de Juros (%)" id="interestRate">
+                <select id="rateType">
+                    <option value="monthly">Mensal</option>
+                    <option value="annual">Anual</option>
+                </select>
             </div>
-        </div>
-
-        <div id="Charts" class="tabcontent">
-            <div class="charts-container">
-                <div class="chart-container line-chart-container">
-                    <canvas id="investmentChart" ></canvas>
-                </div>
-                <div class="chart-container pie-chart-container">
-                    <canvas id="pieChart"></canvas>
+            
+            <div class="form-group">
+                <input type="text" class="aportemensal" id="monthlyAmount" placeholder="Aporte Mensal (R$)" oninput="applyCurrencyMask(this)">
+                <div class="button-group">
+                    <button id="calcular" onClick="calculate()">Calcular</button>
+                    <button id="clearButton" onClick="clearFields()">Limpar</button>    
                 </div>
             </div>
+            
+            <p style="text-align: center; font-size: 0.9em; color: #888;">Feito pela MonqueiTech</p>
         </div>
-    </div>
+    
+        <div id="banner" style="display: none; text-align: center; margin-top: 20px;">
+            <a href="https://example.com">
+                <img src="https://via.placeholder.com/1228x400.png?text=Banner+1228x400" alt="Banner">
+            </a>
+        </div>
+    
+        <div class="values">
+            <div id="finalValue"></div>
+            <div id="totalInvested"></div>
+            <div id="totalInterest"></div>
+        </div>
+    
+        <div class="results" id="resultsDiv" style="display: none;">
+            <div class="tab">
+                <button class="tablinks" onclick="openTab(event, 'Table')" id="defaultTab">Tabela</button>
+                <button class="tablinks" onclick="openTab(event, 'Charts')">Gráficos</button>
+            </div>
+    
+            <div id="Table" class="tabcontent">
+                <div id="monthlyBreakdown">
+                    <table id="breakdownTable">
+                        <thead>
+                            <tr>
+                                <th>Mês</th>
+                                <th>Aporte</th>
+                                <th>Rendimento</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+    
+            <div id="Charts" class="tabcontent">
+                <div class="charts-container">
+                    <div class="chart-container line-chart-container">
+                        <canvas id="investmentChart" width="600" height="400"></canvas>
+                    </div>
+                    <div class="chart-container pie-chart-container">
+                        <canvas id="pieChart" width="600" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -368,9 +420,25 @@
             let value = element.value.replace(/\D/g, '');
             value = (parseInt(value) / 100).toFixed(2);
             element.value = formatCurrency(parseFloat(value));
+            checkBannerDisplay();
+        }
+
+        // Função para fechar o modal
+        function closeModal() {
+            document.getElementById('bannerModal').style.display = 'none';
         }
 
         async function calculate() {
+
+            const initialAmountElement = document.getElementById('initialAmount');
+            const monthlyAmountElement = document.getElementById('monthlyAmount');
+            const interestRateElement = document.getElementById('interestRate');
+            const investmentTimeElement = document.getElementById('investmentTime');
+
+            if (!initialAmountElement.value || !monthlyAmountElement.value || !interestRateElement.value || !investmentTimeElement.value) {
+                alert('Por favor, preencha todos os campos.');
+                return;
+            }
 
             //clearGraphsAndTable();
 
@@ -517,17 +585,22 @@
             new Chart(document.getElementById('pieChart').getContext('2d'), {
                 type: 'pie',
                 data: {
-                    labels: ['Valor Total Investido', 'Valor Total Final', 'Total de Juros', 'Inflação'],
+                    labels: ['Valor Total Investido', 'Total de Juros'], // Labels atualizados
                     datasets: [{
-                        data: [totalInvested, totalAmount, totalInterest, totalInvested - totalAmount], // Assumindo que a diferença representa a inflação
-                        backgroundColor: ['#7DB667', '#68A255', '#FF6384', '#36A2EB'],
-                        hoverBackgroundColor: ['#7DB667', '#68A255', '#FF6384', '#36A2EB']
+                        data: [totalInvested, totalInterest], // Dados atualizados
+                        backgroundColor: ['#7DB667', '#FF6384'], // Cores correspondentes
+                        hoverBackgroundColor: ['#7DB667', '#FF6384'] // Cores de hover correspondentes
                     }]
                 },
                 options: {
                     responsive: true
                 }
             });
+            // Verificação para exibir o modal de banner
+              // Exibir o banner se o valor total final for igual ou superior a 350.000
+            if (totalAmount >= 350000) {
+                document.getElementById('banner').style.display = 'block';
+            }
         }
 
         function openTab(evt, tabName) {
